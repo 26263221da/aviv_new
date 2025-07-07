@@ -20,6 +20,16 @@
       width: 100%; padding: 0.5rem; font-size: 1rem; margin-bottom: 1rem;
       border: 1px solid #ccc; border-radius: 4px;
     }
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+      border: none;
+      background: #ff6600;
+      color: #fff;
+      border-radius: 5px;
+      cursor: pointer;
+    }
     h2{font-size:1.2rem;border-bottom:1px solid #ccc;padding-bottom:.5rem;
        margin-top:2rem;color:#34495e;}
     .news-item {
@@ -64,9 +74,10 @@
   </style>
 </head>
 <body>
-  <header>דוד אביב חדשות לפני כולם</header>
+  <header>אביב חדשות</header>
   <section>
     <input type="text" id="cityFilter" placeholder="חפש לפי עיר או מילה בכותרת..." oninput="filterByCity()">
+    <button onclick="refreshNews()">🔄 רענן חדשות</button>
     <h2>כל החדשות</h2>
     <div id="all-news"></div>
   </section>
@@ -128,9 +139,19 @@
       });
     }
 
+    function refreshNews() {
+      const btn = event.target;
+      btn.textContent = "🔄 טוען חדשות...";
+      btn.disabled = true;
+      document.getElementById("all-news").innerHTML = "";
+      loadAllNews().then(() => {
+        btn.textContent = "🔄 רענן חדשות";
+        btn.disabled = false;
+      });
+    }
+
     loadAllNews();
 
-    // טען מחדש כל 3 דקות
     setInterval(() => {
       loadAllNews();
     }, 180000);
