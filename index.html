@@ -1,0 +1,72 @@
+// index.html
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>דוד אביב חדשות לפני כולם</title>
+
+  <link rel="manifest" href="manifest.json"/>
+  <meta name="theme-color" content="#ffffff"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <link rel="apple-touch-icon" href="icon.svg"/>
+
+  <style>
+    body {margin:0;font-family:'Segoe UI',sans-serif;background:#f9f9f9;color:#222;}
+    header{padding:1rem;text-align:center;font-size:1.8rem;font-weight:bold;
+            border-bottom:2px solid #ddd;color:#2c3e50;}
+    section{padding:1rem;max-width:800px;margin:auto;}
+    h2{font-size:1.2rem;border-bottom:1px solid #ccc;padding-bottom:.5rem;
+       margin-top:2rem;color:#34495e;display:flex;align-items:center;gap:.5rem;}
+    h2 img{height:24px;}
+    .news-item{margin-bottom:1rem;}
+    .news-item a{color:#007acc;text-decoration:none;font-size:1.05rem;}
+    .news-item a:hover{text-decoration:underline;}
+    .pub-date{font-size:.85rem;color:#666;margin-top:.2rem;}
+  </style>
+</head>
+<body>
+  <header>דוד אביב חדשות לפני כולם</header>
+  <section>
+    <h2><img src="https://upload.wikimedia.org/wikipedia/he/thumb/3/3c/Ynet-new-logo.svg/120px-Ynet-new-logo.svg.png" alt="Ynet"> Ynet</h2>
+    <div id="ynet"></div>
+    <h2><img src="https://www.inn.co.il/favicon.ico" alt="בשבע"> בשבע</h2>
+    <div id="bshv"></div>
+    <h2><img src="https://rotter.net/favicon.ico" alt="Rotter"> Rotter</h2>
+    <div id="rotter"></div>
+    <h2><img src="https://www.14news.co.il/wp-content/uploads/2022/06/cropped-14news-logo-192x192.png" alt="ערוץ 14"> ערוץ 14</h2>
+    <div id="ch14"></div>
+    <h2><img src="https://www.haredim1.com/wp-content/uploads/2022/09/cropped-logo-192x192.png" alt="חרדים 1"> חרדים 1</h2>
+    <div id="haredim1"></div>
+    <h2><img src="https://www.mako.co.il/favicon.ico" alt="מאקו"> מאקו</h2>
+    <div id="mako"></div>
+  </section>
+
+  <script>
+    const feeds = [
+      {id:"ynet", url:"https://www.ynet.co.il/Integration/StoryRss2.xml"},
+      {id:"bshv", url:"https://www.inn.co.il/Rss.aspx?act=arcs&id=20"},
+      {id:"rotter", url:"https://rotter.net/rss/rotternews.xml"},
+      {id:"ch14", url:"https://www.14news.co.il/feed/"},
+      {id:"haredim1", url:"https://www.haredim1.com/feed/"},
+      {id:"mako", url:"https://rcs.mako.co.il/rss/news-israel.xml"}
+    ];
+    function formatDate(d){let x=new Date(d); return isNaN(x)?'': x.toLocaleDateString('he-IL',{year:'numeric',month:'short',day:'numeric'});}
+    async function loadRSS(f){
+      try{
+        let r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(f.url)}`);
+        let d=await r.json(), c=document.getElementById(f.id);
+        d.items.slice(0,6).forEach(i=>{
+          let div=document.createElement('div');
+              div.className='news-item';
+              div.innerHTML=`<a href="${i.link}" target="_blank">${i.title}</a>
+                             <div class="pub-date">${formatDate(i.pubDate)}</div>`;
+              c.appendChild(div);
+        });
+      }catch{}
+    }
+    feeds.forEach(loadRSS);
+  </script>
+</body>
+</html>

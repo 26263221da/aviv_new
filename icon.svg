@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192">
+  <rect width="192" height="192" fill="#000000"/>
+  <text x="50%" y="52%" fill="#FFFFFF"
+        font-size="32"
+        font-family="Arial"
+        text-anchor="middle"
+        alignment-baseline="middle">
+    AVIV NEWS
+  </text>
+</svg>
