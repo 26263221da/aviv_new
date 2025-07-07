@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-  <title>1.1 דוד אביב חדשות לפני כולם</title>
+  <title>דוד אביב חדשות לפני כולם</title>
 
   <link rel="manifest" href="manifest.json"/>
   <meta name="theme-color" content="#ffffff"/>
@@ -22,10 +22,45 @@
     }
     h2{font-size:1.2rem;border-bottom:1px solid #ccc;padding-bottom:.5rem;
        margin-top:2rem;color:#34495e;}
-    .news-item{margin-bottom:1rem;}
-    .news-item a{color:#007acc;text-decoration:none;font-size:1.05rem;}
-    .news-item a:hover{text-decoration:underline;}
-    .pub-date{font-size:.85rem;color:#666;margin-top:.2rem;}
+    .news-item {
+      margin-bottom: 1rem;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: box-shadow 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .news-item:hover {
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .news-source {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+    .news-source img {
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+    }
+    .news-item a {
+      color: #007acc;
+      text-decoration: none;
+      font-size: 1.05rem;
+    }
+    .news-item a:hover {
+      text-decoration: underline;
+    }
+    .pub-date {
+      font-size: 0.85rem;
+      color: #666;
+    }
   </style>
 </head>
 <body>
@@ -38,13 +73,13 @@
 
   <script>
     const feeds = [
-      { url: "https://www.ynet.co.il/Integration/StoryRss2.xml" },
-      { url: "https://www.inn.co.il/Rss.aspx?act=arcs&id=20" },
-      { url: "https://rotter.net/rss/rotternews.xml" },
-      { url: "https://www.14news.co.il/feed/" },
-      { url: "https://www.haredim1.com/feed/" },
-      { url: "https://rcs.mako.co.il/rss/news-israel.xml" },
-      { url: "https://www.israelhayom.co.il/rss.xml" }
+      { url: "https://www.ynet.co.il/Integration/StoryRss2.xml", icon: "https://upload.wikimedia.org/wikipedia/he/thumb/3/3c/Ynet-new-logo.svg/120px-Ynet-new-logo.svg.png", name: "Ynet" },
+      { url: "https://www.inn.co.il/Rss.aspx?act=arcs&id=20", icon: "https://www.inn.co.il/favicon.ico", name: "בשבע" },
+      { url: "https://rotter.net/rss/rotternews.xml", icon: "https://rotter.net/favicon.ico", name: "Rotter" },
+      { url: "https://www.14news.co.il/feed/", icon: "https://www.14news.co.il/wp-content/uploads/2022/06/cropped-14news-logo-192x192.png", name: "ערוץ 14" },
+      { url: "https://www.haredim1.com/feed/", icon: "https://www.haredim1.com/wp-content/uploads/2022/09/cropped-logo-192x192.png", name: "חרדים 1" },
+      { url: "https://rcs.mako.co.il/rss/news-israel.xml", icon: "https://www.mako.co.il/favicon.ico", name: "מאקו" },
+      { url: "https://www.israelhayom.co.il/rss.xml", icon: "https://www.israelhayom.co.il/favicon.ico", name: "ישראל היום" }
     ];
 
     function formatDateTime(d) {
@@ -61,7 +96,8 @@
         try {
           const r = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(f.url)}`);
           const d = await r.json();
-          allItems = allItems.concat(d.items);
+          const itemsWithSource = d.items.map(i => ({ ...i, source: f.name, icon: f.icon }));
+          allItems = allItems.concat(itemsWithSource);
         } catch {}
       }
 
@@ -72,6 +108,9 @@
         const div = document.createElement("div");
         div.className = "news-item";
         div.innerHTML = `
+          <div class="news-source">
+            <img src="${i.icon}" alt="${i.source}"> ${i.source}
+          </div>
           <a href="${i.link}" target="_blank">${i.title}</a>
           <div class="pub-date">${formatDateTime(i.pubDate)}</div>
         `;
